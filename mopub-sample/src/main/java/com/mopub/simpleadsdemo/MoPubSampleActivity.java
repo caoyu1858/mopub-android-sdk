@@ -35,6 +35,7 @@ import com.mopub.common.privacy.PersonalInfoManager;
 import com.mopub.common.util.DeviceUtils;
 import com.mopub.mobileads.MoPubConversionTracker;
 import com.mopub.mobileads.MoPubErrorCode;
+import com.mopub.mobileads.VerizonAdapterConfiguration;
 import com.mopub.network.ImpressionData;
 import com.mopub.network.ImpressionListener;
 import com.mopub.network.ImpressionsEmitter;
@@ -42,7 +43,9 @@ import com.mopub.network.ImpressionsEmitter;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -123,13 +126,15 @@ public class MoPubSampleActivity extends AppCompatActivity
             mShowingConsentDialog = savedInstanceState.getBoolean(SHOWING_CONSENT_DIALOG_KEY);
         }
 
+        Map<String, String> verizonConfigs = new HashMap<>();
+        verizonConfigs.put("siteId", "2c9d2b5001696953a60f54190d250005");
+
         final SdkConfiguration.Builder configBuilder = new SdkConfiguration.Builder(
                 "b195f8dd8ded45fe847ad89ed1d016da");
-        if (BuildConfig.DEBUG) {
-            configBuilder.withLogLevel(DEBUG);
-        } else {
-            configBuilder.withLogLevel(INFO);
-        }
+        configBuilder.withLogLevel(DEBUG);
+
+        configBuilder.withMediatedNetworkConfiguration(VerizonAdapterConfiguration.class.getName(),
+                verizonConfigs);
 
         SampleActivityUtils.addDefaultNetworkConfiguration(configBuilder);
 
@@ -403,7 +408,6 @@ public class MoPubSampleActivity extends AppCompatActivity
                     .commit();
         }
     }
-
 
 
     private void onClearLogs() {
